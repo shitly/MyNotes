@@ -1,0 +1,82 @@
+﻿# 自定义过滤器
+在{{ var|foo:"bar" }}中，foo过滤器应当传入变量var和参数 "bar"。
+
+由于模板语言没有提供异常处理，任何从过滤器中抛出的异常都将会显示为服务器错误。因此，如果有合理的值可以返回，过滤器应该避免抛出异常。在模板中有一个明显错误的情况下，引发一个异常可能仍然要好于用静默的失败来掩盖错误。
+
+这是一个定义过滤器的例子：
+
+def cut(value, arg):
+    """Removes all values of arg from the given string"""
+    return value.replace(arg, '')
+
+
+	
+	滤器和时区¶
+
+如果你在编写操作datetime 对象的自定义过滤器，你注册时通常需要将 expects_localtime 标志设置为True：
+
+@register.filter(expects_localtime=True)
+def businesshours(value):
+    try:
+        return 9 <= value.hour < 17
+    except AttributeError:
+        return ''
+
+当设置了此标志，如果你的过滤器的第一个参数是时区相关的日期时间值，Django 会根据模板中的时区转换规则 在把它传递到你的过滤器之前将其转换为当前时区。
+
+
+简单的标签¶
+
+django.template.Library.simple_tag()¶
+
+许多模板标签接收多个参数 —— 字符串或模板变量 —— 并在基于输入的参数和一些其它外部信息进行一些处理后返回一个字符串。例如，current_time 标签可能接受一个格式字符串，并返回与之对应的格式化后的时间。
+
+为了简单化这些类型标签的创建，Django 提供一个辅助函数simple_tag。这个函数是django.template.Library 的一个方法，接受一个任意数目的参数的函数，将其包装在一个render 函数和上面提到的其他必要位，并在模板系统中注册它。
+
+我们的current_time 函数从而可以这样写︰
+
+import datetime
+from django import template
+
+register = template.Library()
+
+@register.simple_tag
+def current_time(format_string):
+    return datetime.datetime.now().strftime(format_string)
+
+关于simple_tag 辅助函数几件值得注意的事项︰
+
+    检查所需参数的数量等等，在我们的函数调用的时刻已经完成，所以我们不需要做了。
+    参数（如果有）的引号都已经被截掉，所以我们收到的只是一个普通字符串。
+    如果该参数是一个模板变量，传递给我们的函数是当前变量的值，不是变量本身。
+
+如果你的模板标签需要访问当前上下文，你可以在注册标签时使用takes_context 参数︰
+
+@register.simple_tag(takes_context=True)
+def current_time(context, format_string):
+    timezone = context['timezone']
+    return your_get_current_time_method(timezone, format_string)
+
+	
+	赋值标签¶
+
+django.template.Library.assignment_tag()¶
+
+为了简单化设置上下文中变量的标签的创建，Django 提供一个辅助函数assignment_tag。这个函数方式的工作方式与simple_tag 相同，不同之处在于它将标签的结果存储在指定的上下文变量中而不是直接将其输出。
+
+我们之前的current_time 函数从而可以这样写︰
+
+@register.assignment_tag
+def get_current_time(format_string):
+    return datetime.datetime.now().strftime(format_string)
+
+然后你可以使用as 参数后面跟随变量的名称将结果存储在模板变量中，并将它输出到你觉得合适的地方︰
+
+{% get_current_time "%Y-%m-%d %I:%M %p" as the_time %}
+<p>The time is {{ the_time }}.</p>
+
+
+sudo apt-get install build-essential
+yum install gcc gcc-c++
+
+

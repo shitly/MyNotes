@@ -1,0 +1,90 @@
+﻿#  定时检查是否 规则需要重新加载
+*/02  *  *  * *   root   python   /apps/big_data_detect_sys/data_catch_analysis/stats_script/timer_polling_status.py >/dev/null  &
+*/02  *  *  * *   root  /apps/big_data_detect_sys/data_catch_analysis/start_shells/timer_polling.sh >/dev/null  &
+# 每天1:02 执行
+02 01  *  * *   root   python   /apps/big_data_detect_sys/data_catch_analysis/stats_script/timer_stats_day.py  >/dev/null &
+#  每小时执行
+02  *  *  * *   root   python   /apps/big_data_detect_sys/data_catch_analysis/stats_script/timer_stats_hour.py >/dev/null &
+
+
+126
+行驶证
+居住证
+
+
+163
+户口簿
+
+
+select * from sensitive_data_day where
+        day_time = (select max(day_time)  from sensitive_data_day where src_type = 1)
+        and src_type = 1 ;
+
+
+select t2.sig_msg, t1.add_time  from sensitive_data_details t1,  rule_sig_map t2
+        where  t1.add_time_int >= 20170225 and t1.add_time_int <= 20170228
+        and t1.src_ip =  '192.168.0.107'
+        and t1.rule_id = t2.rule_id order by t1.add_time  desc
+
+
+        print "ZZZZZZZZZZZZZZZZZZ" + query_sql + "ZZZZZZZZZZZZZZZZZZ"
+		
+		
+		
+		
+		
+		
+vim /etc/resolvconf/resolv.conf.d/base
+resolvconf -u
+cat /etc/resolv.conf
+
+
+
+
+		
+		
+
+
+
+uwsgi -x uwsgi_conf/yun_back_end_gevent_auth.xml --pidfile /run/uwsgi_auth.pid
+uwsgi -x uwsgi_conf/yun_back_end_gevent.xml --pidfile /run/uwsgi_bweb.pid
+uwsgi -x uwsgi_config/uwsgi_manager_gevent_run_api.xml --pidfile /run/uwsgi_api.pid
+uwsgi -x uwsgi_config/uwsgi_manager_gevent_run_firewall.xml --pidfile /run/uwsgi_firewall.pid
+
+
+
+suricata -c /etc/suricata/suricata.yaml -S /etc/suricata/finally_rule.rules --pidfile /run/suricata.pid -i eth0 -D
+barnyard2 -c /etc/suricata/barnyard2.conf -d /var/log/suricata -f unified2.alert -w /var/log/suricata/barnyard2.waldo -i eth0
+
+
+./configure \
+--prefix=/program_files/nginx_1.10.2 \
+--pid-path=/var/run/nginx/nginx.pid \
+--with-http_ssl_module \
+--with-http_flv_module \
+--with-http_gzip_static_module \
+--http-log-path=/var/log/nginx/access.log \
+--http-client-body-temp-path=/var/tmp/nginx/client \
+--http-proxy-temp-path=/var/tmp/nginx/proxy \
+--http-fastcgi-temp-path=/var/tmp/nginx/fcgi \
+--with-http_stub_status_module
+
+
+
+
+
+
+
+
+vim /etc/crontab
+02 *    * * *   root    sh   /home/water/js/official/code/back_run.sh
+
+
+
+vim /etc/rc.local
+sh /apps/big_data_detect_sys/official/code/w_firewall.py    &
+sh /apps/big_data_detect_sys/official/code/w_read_firewall.py  &
+
+
+
+root@water:/program_files/nginx_1.10.2# ./sbin/nginx -c /program_files/nginx_1.10.2/conf/nginx.conf
